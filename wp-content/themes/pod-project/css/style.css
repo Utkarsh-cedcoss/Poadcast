@@ -1588,4 +1588,22 @@ ul {
     height: 110px;
     padding: 15px; }
 
+    .main-nav ul, .main-nav li {
+      display: inline;
+    }
+
+    .main-nav ul ul {
+      position: absolute;
+      opacity: 0;
+
+    }
+
+   .main-nav ul li:hover > ul {
+     position: absolute;
+     top:100%;
+     opacity:1;
+     background-color: #000000;
+     border-bottom: none;
+   } 
+
 /*# sourceMappingURL=style.css.map */

@@ -64,7 +64,18 @@
 
             <!-- Nav Start -->
             <div class="classynav">
-              <ul id="nav">
+              <?php 
+              wp_nav_menu(array(
+                'menu'=> 'primary-menu',
+                //'menu_id'=> 'nav',
+                //'conatiner'=>'<ul id="nav">%3$s</ul>',
+                //'container_class'   => 'dropdown',
+                'items_wrap' => '<nav class="main-nav"><ul id="menu-main-nav" class="menu">%3$s</ul></nav>'
+
+            
+               ));
+              ?>
+              <!-- <ul id="nav">
                 <li class="current-item"><a href="./index.html">Home</a></li>
                 <li><a href="#">Pages</a>
                   <ul class="dropdown">
@@ -101,7 +112,7 @@
                   </ul>
                 </li>
                 <li><a href="./contact.html">Contact</a></li>
-              </ul>
+              </ul> -->
 
               <!-- Top Search Area -->
               <div class="top-search-area">

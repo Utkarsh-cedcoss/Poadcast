@@ -130,10 +130,12 @@ function pod_project_widgets_init() {
 			'name'          => esc_html__( 'Sidebar', 'pod-project' ),
 			'id'            => 'sidebar-1',
 			'description'   => esc_html__( 'Add widgets here.', 'pod-project' ),
-			'before_widget' => '<section id="%1$s" class="widget %2$s">',
-			'after_widget'  => '</section>',
-			'before_title'  => '<h2 class="widget-title">',
-			'after_title'   => '</h2>',
+			//'before_widget' => '<section id="%1$s" class="widget %2$s">',
+			'before_widget' => '<div class="single-widget-area catagories-widget mb-80 catagories-list">',
+			//'after_widget'  => '</section>',
+			'after_widget'  => '</div>',
+			'before_title'  => '<h5 class="widget-title">',
+			'after_title'   => '</h5>',
 		)
 	);
 }
@@ -225,4 +227,291 @@ function wp_theme_supports(){
 	add_theme_support( 'post-thumbnails' );
 }
 add_action( 'after_setup_theme', 'wp_theme_supports' );
+
+// this function will register the menu.
+function nav_menu(){
+	register_nav_menus(  // function to register menu
+		array(
+			'primary-menu' => __( 'Primary_Menu' )
+		)
+	);
+}
+add_action( 'init', 'nav_menu' );
+
+function func_sidebar(){
+	register_sidebar(array(
+		'name' => ('Header Sidebar'),
+		'id' => 'sidebar-0',
+
+	));
+}
+add_action("widgets_init","func_sidebar");
+
+//--------------------------------------------------------------------------------------
+// registering custom widgets.
+// user defined function made to register the widget.
+function register_my_widget(){
+	
+	
+	register_widget('my_Widget');  // this function registers the widget and take class name as parameter.
+}
+add_action('widgets_init','register_my_widget'); // adding user defined function with action hook.
+
+class my_Widget extends WP_Widget{   // Class which extends another class named 'WP_Widget'.
+
+	function __construct()  // constructor of class
+	{
+		parent::__construct(  // parent class constructor. i.e. constructor of 'WP_Widget' class.
+			'my_widget',  //id
+			__('Custom_Recent_Post'),  //Menu title of the Widget. 
+			array('description'=>__('Sample widget based on online web tutor'))  // discription
+		);	
+		
+	}  // widget setting
+
+	
+
+	function form($instance){    // this function will make a form in backend so that user can provide title of the widget throug a text field they are making.
+
+		if(isset($instance['title'])){    // $instance is an array which contains 'title' as key and the value is the name of the title we give. 
+			$title=$instance['title'];
+
+		} else{
+			$title = __('New title','my_widget_domain');  // here a new value of title is assigned to $title.
+		}
+		// widget admin form
+		?>
+		<p>
+			<label for="<?php echo $this->get_field_id('title');?>"><?php _e('Title:'); ?></label>
+			<input class="widefat" id="<?php echo $this->get_field_id('title'); ?>" name="<?php echo $this->get_field_name('title');?>" type="text" value="<?php echo esc_attr($title); ?>" />
+		</p>
+		<?php
+
+	} // form for the widget options
+
+	function update($new_instance, $old_instance){
+		$instance=array();
+		$instance['title'] = (!empty($new_instance['title'])) ? strip_tags($new_instance['title']) : '';
+		return $instance;
+
+
+	} // update the widget.
+
+
+	function widget($args,$instance){
+		$title= apply_filters('widget_title',$instance['title']);  // assigning title to widget.
+
+		// before and after widget argument are defined by themes.
+		//echo $args['before_widget'];  //<aside>
+		//if(!empty($title))
+		//echo $args['before_title'] . $title . $args['after_title'];  // <h1>....</h1>
+
+		// this is where you run the code and display the output.
+		//echo __("Hello World");
+		$recent_post=wp_get_recent_posts(array(
+			'numberposts'=>3,
+			'post_status'=>'publish'
+		));
+
+		?>
+		<div class="single-widget-area news-widget mb-80">
+              <h5 class="widget-title">Recent Posts</h5>
+		<?php
+
+		foreach($recent_post as $post){ ?>
+
+				
+			
+		
+			<div class="single-news-area d-flex">
+                <div class="blog-thumbnail">
+				<?php echo get_the_post_thumbnail($post['ID'],); ?>
+                </div>
+                <div class="blog-content">
+                  <a href="#" class="post-title"><?echo $post['post_title'];?></a>
+                  <span class="post-date"><?echo $post['post_date'];?></span>
+                </div>
+              </div>
+		<?php } ?>
+		</div>
+		<?php
+		wp_reset_query();
+
+
+		//echo $args['after_widget'];  // </aside>
+
+	} // display the widget -- front end user.
+
+} //the example widget class.
+
+//---------------------------------------------------------------------------------------------------
+// Making one more widget for categories.
+
+function register_my_widget1(){
+	
+	
+	register_widget('my_Widget1');  // this function registers the widget and take class name as parameter.
+}
+add_action('widgets_init','register_my_widget1');
+
+class my_Widget1 extends WP_Widget{
+
+	function __construct()  // constructor of class
+	{
+		parent::__construct(  // parent class constructor. i.e. constructor of 'WP_Widget' class.
+			'my_widget1',  //id
+			__('Custom_Categories'),  //Menu title of the Widget. 
+			array('description'=>__('Sample widget based on listing of Categories'))  // discription
+		);	
+		
+	}  // widget setting
+
+
+
+	function form($instance){    // this function will make a form in backend so that user can provide title of the widget throug a text field they are making.
+
+		if(isset($instance['title'])){    // $instance is an array which contains 'title' as key and the value is the name of the title we give. 
+			$title=$instance['title'];
+
+		} else{
+			$title = __('New title','my_widget_domain');  // here a new value of title is assigned to $title.
+		}
+		// widget admin form
+		?>
+		<p>
+			<label for="<?php echo $this->get_field_id('title');?>"><?php _e('Title:'); ?></label>
+			<input class="widefat" id="<?php echo $this->get_field_id('title'); ?>" name="<?php echo $this->get_field_name('title');?>" type="text" value="<?php echo esc_attr($title); ?>" />
+		</p>
+		<?php
+
+	} // form for the widget options
+
+
+	function update($new_instance, $old_instance){
+		$instance=array();
+		$instance['title'] = (!empty($new_instance['title'])) ? strip_tags($new_instance['title']) : '';
+		return $instance;
+
+
+	} // update the widget.
+
+
+	function widget($args,$instance){
+		$title= apply_filters('widget_title',$instance['title']);  // assigning title to widget.
+		
+		$categories=get_categories();
+		// foreach($categories as $category){
+		// 	echo '</br>';
+		// 	echo $category->name;
+		// }
+		?>
+
+<div class="single-widget-area catagories-widget mb-80">
+        <h5 class="widget-title"><?php echo $title;?></h5>
+
+              <!-- catagories list -->
+    <ul class="catagories-list">
+		<?php foreach($categories as $category){ ?>
+		<li><a href="#"><i class="fa fa-angle-double-right" aria-hidden="true"></i><?php echo $category->name;?></a></li>   
+		<?php } ?>
+			  
+               
+                
+                
+			  </ul>
+			 
+            </div>
+
+
+		<?php
+		
+
+
+		//echo $args['after_widget'];  // </aside>
+
+	} // display the widget -- front end user.
+
+}
+
+//-------------------------------------------------------------------------------------------------------
+
+// Making one more widgets for tags
+
+function register_my_widget2(){
+	
+	
+	register_widget('my_Widget2');  // this function registers the widget and take class name as parameter.
+}
+add_action('widgets_init','register_my_widget2');
+
+class my_Widget2 extends WP_Widget{
+
+	function __construct()  // constructor of class
+	{
+		parent::__construct(  // parent class constructor. i.e. constructor of 'WP_Widget' class.
+			'my_widget2',  //id
+			__('Custom_Tags'),  //Menu title of the Widget. 
+			array('description'=>__('Sample widget based on listing of Tags'))  // discription
+		);	
+		
+	}  // widget setting
+
+
+
+	function form($instance){    // this function will make a form in backend so that user can provide title of the widget throug a text field they are making.
+
+		if(isset($instance['title'])){    // $instance is an array which contains 'title' as key and the value is the name of the title we give. 
+			$title=$instance['title'];
+
+		} else{
+			$title = __('New title','my_widget_domain');  // here a new value of title is assigned to $title.
+		}
+		// widget admin form
+		?>
+		<p>
+			<label for="<?php echo $this->get_field_id('title');?>"><?php _e('Title:'); ?></label>
+			<input class="widefat" id="<?php echo $this->get_field_id('title'); ?>" name="<?php echo $this->get_field_name('title');?>" type="text" value="<?php echo esc_attr($title); ?>" />
+		</p>
+		<?php
+
+	} // form for the widget options
+
+
+	function update($new_instance, $old_instance){
+		$instance=array();
+		$instance['title'] = (!empty($new_instance['title'])) ? strip_tags($new_instance['title']) : '';
+		return $instance;
+
+
+	} // update the widget.
+
+
+	function widget($args,$instance){
+		$title= apply_filters('widget_title',$instance['title']);  // assigning title to widget.
+		
+		$tags=get_tags();
+		//print_r($tags); ?>
+
+		<div class="single-widget-area tags-widget mb-80">
+              <h5 class="widget-title"><?php echo $title;?></h5>
+
+              <ul class="tags-list">
+				  <?php foreach($tags as $tag){ ?>
+
+				
+				<li><a href="#"><?php echo $tag->name;?></a></li>
+				<?php } ?>
+              </ul>
+            </div>
+			<?php echo( home_url( '/' ) );?>
+		
+		<?php
+
+		//echo $args['after_widget'];  // </aside>
+
+	} // display the widget -- front end user.
+
+}
+
+
 

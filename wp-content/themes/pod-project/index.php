@@ -50,7 +50,8 @@ get_header();
       <div class="row">
         <div class="col-12 col-lg-8">
 
-		  <!-- Single Blog Area -->
+      <!-- Single Blog Area -->
+      <?php echo 'index.php';?>
 		  <?php if( have_posts() ){
 			  while( have_posts()){
 				  the_post();
@@ -59,7 +60,7 @@ get_header();
 			  
           <div class="single-blog-area mt-50 mb-50">
 			<!-- <a href="#" class="mb-30"><img src="<?php //echo get_template_directory_uri();?>/img/bg-img/21.jpg" alt=""></a> -->
-			<a href="#" class="mb-30"><img src="<?php the_post_thumbnail();?>" alt=""></a>
+			<a href="#" class="mb-30"><?php the_post_thumbnail();?></a>
             <!-- Content -->
             <div class="post-content">
               <a href="#" class="post-date"><?php the_date();?></a>
@@ -82,7 +83,7 @@ get_header();
           <!-- Pagination -->
           <div class="poca-pager d-flex mb-80">
             <a href="#">Previous Post <span>Episode 3 – Wardrobe For Busy People</span></a>
-            <a href="#">Next Post <span>Episode 6 – Defining Your Style</span></a>
+            <a href="#"> Next Post <span>Episode 6 – Defining Your Style</span></a>
           </div>
 
         </div>
