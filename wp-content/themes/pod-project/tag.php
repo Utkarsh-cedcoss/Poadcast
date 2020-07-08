@@ -1,15 +1,6 @@
 <?php
 /**
- * The template for displaying search results pages
- *
- * @link https://developer.wordpress.org/themes/basics/template-hierarchy/#search-result
- *
- * @package pod_project
- */
-
-
-/**
- * The main template file
+ * The tag.php file
  *
  * This is the most generic template file in a WordPress theme
  * and one of the two required files for a theme (the other being style.css).
@@ -60,7 +51,7 @@ get_header();
         <div class="col-12 col-lg-8">
 
       <!-- Single Blog Area -->
-      <?php echo 'search.php';?>
+      <?php echo 'tag.php';?>
 		  <?php if( have_posts() ){
 			  while( have_posts()){
 				  the_post();

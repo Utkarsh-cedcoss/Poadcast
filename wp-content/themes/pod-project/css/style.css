@@ -1604,6 +1604,14 @@ ul {
      opacity:1;
      background-color: #000000;
      border-bottom: none;
-   } 
+   }
+/* here is style for comments*/
+   
+
+.comment:last-of-type{
+  margin-bottom: 0;
+}
+   
+   
 
 /*# sourceMappingURL=style.css.map */

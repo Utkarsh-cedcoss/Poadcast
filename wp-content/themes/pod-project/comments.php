@@ -20,58 +20,74 @@ if ( post_password_required() ) {
 }
 ?>
 
-<div id="comments" class="comments-area">
+<!-- <div id="comments" class="comments-area"> -->
 
+<?php
+	if(have_comments() ):
+		// we have comments
+?>
+<div class="comment_area mb-50 clearfix">
+	<h5 class="title"><?php echo get_comments_number()." Comments";?></h5>
+		<ol>
+			<?php 
+			$args= array(
+				'walker' => null,
+				'max_depth' => '',
+				//'style' => 'ul',
+				'callback' => 'wpwa_comment_list',
+				'end-callback' => null,
+				'type' => 'all',
+				'reply_text' => 'Reply',
+				'page' => '',
+				'per_page' => '',
+				'avatar_size' => 32,
+				'reverse_top_leve' => null,
+				'reverse_children' => '',
+				'format' => 'html5',
+				'short_ping' => false,
+				'echo' => true
+			 ); ?>
+			 
+			<?php
+			wp_list_comments($args);
+			?>
+			
+
+		</ol>
+		</div>
+
+
+<?php 
+	if(!comments_open() && get_comments_number()):
+?>
+
+<p class="no-comments"><?php esc_html_e('comments are closed.','sunsettheme');?></p>
+
+<?php 
+  endif;
+?>
+
+<?php 
+  endif;
+?>
 	<?php
-	// You can start editing here -- including this comment!
-	if ( have_comments() ) :
-		?>
-		<h2 class="comments-title">
-			<?php
-			$pod_project_comment_count = get_comments_number();
-			if ( '1' === $pod_project_comment_count ) {
-				printf(
-					/* translators: 1: title. */
-					esc_html__( 'One thought on &ldquo;%1$s&rdquo;', 'pod-project' ),
-					'<span>' . wp_kses_post( get_the_title() ) . '</span>'
-				);
-			} else {
-				printf( 
-					/* translators: 1: comment count number, 2: title. */
-					esc_html( _nx( '%1$s thought on &ldquo;%2$s&rdquo;', '%1$s thoughts on &ldquo;%2$s&rdquo;', $pod_project_comment_count, 'comments title', 'pod-project' ) ),
-					number_format_i18n( $pod_project_comment_count ), // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped
-					'<span>' . wp_kses_post( get_the_title() ) . '</span>'
-				);
-			}
-			?>
-		</h2><!-- .comments-title -->
 
-		<?php the_comments_navigation(); ?>
-
-		<ol class="comment-list">
-			<?php
-			wp_list_comments(
-				array(
-					'style'      => 'ol',
-					'short_ping' => true,
-				)
-			);
-			?>
-		</ol><!-- .comment-list -->
-
-		<?php
-		the_comments_navigation();
-
-		// If comments are closed and there are comments, let's leave a little note, shall we?
-		if ( ! comments_open() ) :
-			?>
-			<p class="no-comments"><?php esc_html_e( 'Comments are closed.', 'pod-project' ); ?></p>
-			<?php
-		endif;
-
-	endif; // Check for have_comments().
-
-	comment_form();
+	$fields = array(
+		//'author' => '<div><label for="author">'.__('Name','domainreference').'</label> <span class="required">*</span> <input id="author"  name="author" type="text" value="'.esc_attr($commenter['comment_author']).'" maxlength="245" required='required' /></div>'
+		'author' => '<div class="col-lg-6"><input id="author" class="form-control mb-30" name="author" aria-required="true" placeholder="Name"></input></div>',
+		'email' => '<div class="col-lg-6"><input id="email" class="form-control mb-30" name="email" placeholder="Email"></input></div>'
+		//'author' => '<p class="comment-form-author"><label for="author">Name <span class="required">*</span></label> <input id="author" name="author" type="text" value="" size="30" maxlength="245" required='required' /></p>'
+	);
+	
+	$args=array(
+		'class_submit'=>'btn poca-btn mt-30',
+		'comment_field' => '<div class="col-lg-6"><textarea id="comment" class="form-control mb-30" name="comment" aria-required="true" placeholder="Comment"></textarea></div>',
+		'fields' => apply_filters('comment_form_default_fields', $fields)
+	);
 	?>
+	<div class="contact-form">
+	<?php
+	comment_form($args);?>
+	</div>
 
-</div><!-- #comments -->
+<!-- </div> -->

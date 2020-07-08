@@ -223,6 +223,9 @@ require get_template_directory() . '/inc/customizer.php';
 if ( defined( 'JETPACK__VERSION' ) ) {
 	require get_template_directory() . '/inc/jetpack.php';
 }
+
+//--------------------------------------------------------------------------------------------------
+// function to add feature image in posts.
 function wp_theme_supports(){
 	add_theme_support( 'post-thumbnails' );
 }
@@ -238,6 +241,8 @@ function nav_menu(){
 }
 add_action( 'init', 'nav_menu' );
 
+
+// function to register sidebar.
 function func_sidebar(){
 	register_sidebar(array(
 		'name' => ('Header Sidebar'),
@@ -250,6 +255,7 @@ add_action("widgets_init","func_sidebar");
 //--------------------------------------------------------------------------------------
 // registering custom widgets.
 // user defined function made to register the widget.
+// widget for recent posts.
 function register_my_widget(){
 	
 	
@@ -328,7 +334,7 @@ class my_Widget extends WP_Widget{   // Class which extends another class named 
 				<?php echo get_the_post_thumbnail($post['ID'],); ?>
                 </div>
                 <div class="blog-content">
-                  <a href="#" class="post-title"><?echo $post['post_title'];?></a>
+                  <a href="<?php echo get_permalink($post['ID']);?>" class="post-title"><?echo $post['post_title'];?></a>
                   <span class="post-date"><?echo $post['post_date'];?></span>
                 </div>
               </div>
@@ -412,7 +418,9 @@ class my_Widget1 extends WP_Widget{
               <!-- catagories list -->
     <ul class="catagories-list">
 		<?php foreach($categories as $category){ ?>
-		<li><a href="#"><i class="fa fa-angle-double-right" aria-hidden="true"></i><?php echo $category->name;?></a></li>   
+			<?php //echo $category->term_id;
+			//echo get_category_link($category->term_id); ?>
+		<li><a href="<?php echo get_category_link($category->term_id); ?>"><i class="fa fa-angle-double-right" aria-hidden="true"></i><?php echo $category->name;?></a></li>   
 		<?php } ?>
 			  
                
@@ -499,7 +507,7 @@ class my_Widget2 extends WP_Widget{
 				  <?php foreach($tags as $tag){ ?>
 
 				
-				<li><a href="#"><?php echo $tag->name;?></a></li>
+				<li><a href="<?php echo get_tag_link($tag->term_id);?>"><?php echo $tag->name;?></a></li>
 				<?php } ?>
               </ul>
             </div>
@@ -511,6 +519,77 @@ class my_Widget2 extends WP_Widget{
 
 	} // display the widget -- front end user.
 
+}
+
+//-----------------------------------------------------------------------------------------------------
+
+// registering custom taxonomy named podcast
+
+function func_podcast_custom(){
+	$labels = [
+        'name'              => _x('Podcasts', 'taxonomy general name'),
+'singular_name'     => _x('Podcast', 'taxonomy singular name'),
+'search_items'      => __('Search Podcasts'),
+'all_items'         => __('All Podcasts'),
+'parent_item'       => __('Parent Podcast'),
+'parent_item_colon' => __('Parent Podcast:'),
+'edit_item'         => __('Edit Podcast'),
+'update_item'       => __('Update Podcast'),
+'add_new_item'      => __('Add New Podcast'),
+'new_item_name'     => __('New Podcast Name'),
+'menu_name'         => __('Podcast'),
+];
+
+$args=[
+	'labels' => $labels,
+'public' => true,
+'publicly_queryable' => true,
+'show_ui' => true,
+'show_in_menu' => true,
+'query_var' => true,
+'rewrite' => array( 'slug' => 'Podcast' ),
+'capability_type' => 'post',
+'has_archive' => true,
+'hierarchical' => false,
+'menu_position' => null,
+'supports' => array( 'title', 'editor', 'author', 'thumbnail', 'excerpt', 'comments' ),
+];
+register_taxonomy('Podcast', ['post'], $args);
+}
+add_action('init','func_podcast_custom');
+
+//--------------------------------------------------------------------------------------------------
+function wpwa_comment_list($comment, $args, $depth){
+         
+	?>
+	<li class="single_comment_area">
+	<!-- Comment Content -->
+	<?php 
+		if($comment->comment_approved == '0'){
+
+		}
+	?>
+
+		<div class="comment-content d-flex">
+		<!-- Comment Author -->
+			<div class="comment-author">
+				<?php echo get_avatar($comment,$size='60');?>
+			</div>
+			<!-- Comment-meta -->
+			<div class="comment-meta">
+				<a href="#" class="post-date"><?php comment_date();?></a>
+				<h5><?php comment_author();?></h5>
+				<p><?php comment_text();?></p>
+				<a href="#" class="like">Like</a>
+				<?php comment_reply_link(array_merge($args,array(
+					'reply_text' => __('Reply','textdomain'),
+					'depth' => $depth,
+				)
+				));?>
+			</div>
+		</div>
+	</li>
+	<?php	 
 }
 
 

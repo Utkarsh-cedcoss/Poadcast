@@ -63,7 +63,7 @@ get_header();
 					?>
 					
             <div class="post-details-text">
-              <img src="<?php the_post_thumbnail();?>" class="mb-30" alt="">
+              <img src="<?php the_post_thumbnail();?>
 
               <div class="post-content">
                 <a href="#" class="post-date"><?php the_date();?></a>
@@ -103,12 +103,20 @@ get_header();
 					 <li><a href="#"><?php print_r($value->cat_name); ?></a></li>
 				 <?php }
 				  ?>
-
+            
 
 
                  
                 </ul>
               </div>
+
+              <?php 
+                if(comments_open()){
+                  comments_template();
+                }
+              ?>
+
+             
 
               <!-- Pagination -->
               <!-- <div class="poca-pager d-flex mb-30">
